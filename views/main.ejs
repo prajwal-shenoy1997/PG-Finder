@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<title>PG Finder</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=KoHo:700" rel="stylesheet"> 
+  <link href="https://fonts.googleapis.com/css?family=Permanent+Marker" rel="stylesheet"> 
+  <link href="https://fonts.googleapis.com/css?family=Play" rel="stylesheet"> 
+<script type="text/javascript" src="/seekbar.js"></script>
+<link rel="stylesheet" href="/seekbar.css"> 
+<body>
+
+	<h1 class="deepshadow">PG FINDER</h1>
+	<hr>
+  <div class="container"><form method="POST" action="/getcoordinates" id="seek">
+  <fieldset id="filter">
+  <legend id="tag">FILTER :</legend>
+  <span class="search"><h6>RATINGS :</h6> <label>Min:0</label><input type="range" name="rangeInput" min="0" max="10" onchange="u1TextInput(this.value);"><label>Max:10</label><br>
+<input type="text"  id="textInput1" name="rating" value=""> </span>
+   <span class="search"><h6>COST :</h6><label>Min:Rs.2,000</label><input type="range" name="rangeInput" min="2000" max="20000" onchange="u2TextInput(this.value);"><label>Max:Rs.20,000</label><br>
+<input type="text" id="textInput2" name="cost" value=""> </span>
+ 
+  <span class="search"><h6>AVAILABLITY :</h6><label>Min:1</label><input type="range" name="rangeInput" min="1" max="50" onchange="u6TextInput(this.value);"><label>Max:50</label><br>
+<input type="text" id="textInput6" name="availability"value=""> </span> 
+  
+    <span class="search"><h6>SHARING :</h6><label>Min:1(single)</label><input type="range" name="rangeInput" min="1" max="4" onchange="u4TextInput(this.value);"><label>Max:4</label><br>
+<input type="text" id="textInput4" name="sharing" value=""> </span>
+
+  <span class="search"><h6>DISTANCE :</h6><label>Min:1 Km</label><input type="range" name="rangeInput" min="1" max="10" onchange="u5TextInput(this.value);"><label>Max:10 Kms</label><br>
+<input type="text" id="textInput5" name="distance" value=""> </span>
+
+   <button type="submit" class="btn btn-primary btm">SET</button>
+</fieldset>
+
+</form></div>
+<br>
+<br>
+<div id="floating-panel">
+<b>Travelling Mode: </b>
+<select id="start" onchange="change_way();">
+  <option value="WALKING" >Walking</option>
+  <option value="DRIVING">Driving</option>
+  <option value="BICYCLING">Bicycling</option>
+  <option value="TRANSIT">Transit</option>
+</select>
+</div>
+<div id="map">
+</div>
+<script>
+var myMarker,selectedMode,myPos,end,directionsService,directionsDisplay;
+function initMap(){
+  // Map options
+  selectedMode="DRIVING";
+  var options = {
+    zoom:12,
+    center:{lat:42.3601,lng:-71.0589}
+  }
+
+  // New map
+  var map = new google.maps.Map(document.getElementById('map'), options);
+  directionsService = new google.maps.DirectionsService();
+  directionsDisplay = new google.maps.DirectionsRenderer();
+  directionsDisplay.setMap(map);
+  directionsDisplay.setOptions(  {suppressMarkers:true,preserveViewport: false} );
+  infoWindow = new google.maps.InfoWindow;
+  <%for(var i=0;i<marker.length;i++){%>
+        addMarker(<%-marker[i]%>);
+    <%};%>
+  // Loop through markers
+  // Try HTML5 geolocation.
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+          	myPos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            myMarker = new google.maps.Marker({
+                            position:myPos,
+                            map:map,
+                            //icon:props.iconImage
+                          });
+             myMarker.setIcon('/person.png');
+
+            map.setCenter(myPos);
+          }, function() {
+            handleLocationError(true, infoWindow, map.getCenter());
+          });
+        } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, infoWindow, map.getCenter());
+        }
+
+
+  // Add Marker Function
+  function addMarker(props){
+    var marker = new google.maps.Marker({
+      position:props.coords,
+      map:map,
+      //icon:props.iconImage
+    });
+
+    // Check for customicon
+    if(props.iconImage){
+      // Set icon image
+      marker.setIcon(props.iconImage);
+    }
+
+    // Check content
+    if(props.content){
+          var infoWindow = new google.maps.InfoWindow({
+            content:props.content
+          });
+
+          marker.addListener('mouseover', function(){
+            infoWindow.open(map, marker);
+          });
+          marker.addListener('mouseout', function(){
+            infoWindow.close();
+          });
+          marker.addListener('click', function(){
+          	end=props.coords;
+          	var request = {
+    origin: myPos,
+    destination: end,
+    travelMode: google.maps.TravelMode[selectedMode]
+
+  };
+  directionsService.route(request, function(result, status) {
+    if (status == 'OK') {
+      directionsDisplay.setDirections(result);
+    }
+  });
+          })
+        }
+  }}
+ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+                              'Error: The Geolocation service failed.' :
+                              'Error: Your browser doesn\'t support geolocation.');
+        infoWindow.open(map);
+      }
+      function change_way(){ 
+	selectedMode = document.getElementById('start').value;
+	var request = {
+    origin: myPos,
+    destination: end,
+    travelMode: google.maps.TravelMode[selectedMode]
+
+  };
+   if(selectedMode=="DRIVING")
+    myMarker.setIcon('/car.png');
+  else if(selectedMode=="TRANSIT")
+    myMarker.setIcon('/train.png');
+  else if(selectedMode=="BICYCLING")
+    myMarker.setIcon('/cycle.png');
+  else
+    myMarker.setIcon('/person.png');
+  directionsService.route(request, function(result, status) {
+    if (status == 'OK') {
+      directionsDisplay.setDirections(result);
+    }
+  });
+
+}
+
+</script>
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCKvCAblnCNmEJsLXgFOIptBuNWfzisEz0&callback=initMap">
+</script>
+</body>
+</html>
+</body>
+</html>

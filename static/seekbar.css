@@ -1,0 +1,91 @@
+body{
+height: 50%;
+background-image: url('/background.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+#tag{
+    width:20%;
+    font-family: 'Permanent Marker', cursive;
+    font-size: 40px;
+    padding-left: 2%;
+}
+#filter{
+    padding: 2%;
+    border-width:2px;
+    border-style: solid;
+}
+h1 {
+  font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+  font-size: 92px;
+  padding: 80px 50px;
+  padding-bottom: 20px;
+  padding-top: 30px;
+  text-align: center;
+  text-transform: uppercase;
+  text-rendering: optimizeLegibility;
+}
+h1.deepshadow {
+  color: #e0dfdc;
+  letter-spacing: 0.1em;
+  text-shadow: 0 -1px 0 #fff, 0 1px 0 #2e2e2e, 0 2px 0 #2c2c2c, 0 3px 0 #2a2a2a, 0 4px 0 #282828, 0 5px 0 #262626, 0 6px 0 #242424, 0 7px 0 #222, 0 8px 0 #202020, 0 9px 0 #1e1e1e, 0 10px 0 #1c1c1c, 0 11px 0 #1a1a1a, 0 12px 0 #181818, 0 13px 0 #161616, 0 14px 0 #141414, 0 15px 0 #121212, 0 22px 30px rgba(0, 0, 0, 0.9);
+}
+h6{
+	font-family: 'KoHo', sans-serif;
+	font-size: large;
+	text-decoration: underline;
+}
+input{
+    text-align: center;
+    background: transparent;
+    border-color: #2a3a51;
+}
+hr{
+    border: 0;
+height: 2px;
+background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+.search
+{
+	float:left;
+	width:33%;
+
+}
+label{
+    font-family: 'Play', sans-serif;
+}
+.btm
+{
+	margin:30px;
+	width:20%;
+	margin-left: 0.4%;
+	margin-top: 4.8%;
+	background-color:#2f2a50;
+    border-width:0;
+}
+
+#map{
+      margin: 0 auto;
+      height:700px;
+      width:98%;
+    -moz-box-shadow:    3px 3px 5px 6px  #181818;
+  -webkit-box-shadow: 3px 3px 5px 6px  #181818;
+  box-shadow:         3px 3px 5px 6px  #181818;
+  border-radius: 7px;
+    }
+
+#floating-panel {
+        position: absolute;
+        top: 575px;
+        left: 40%;
+        z-index: 5;
+        background-color: #d1d1d1;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+        border-radius: 7px;
+      }
